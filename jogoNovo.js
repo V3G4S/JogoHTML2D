@@ -25,9 +25,10 @@ class Entidade {
     get gravidade() {
         return this.#gravidade;
     }
-    desenhar(ctx, cor) {
-        ctx.fillStyle = cor
-        ctx.fillRect(this.x, this.y, this.largura, this.altura);
+    desenhar() {
+        ctx.drawImage(this.image, this.x, this.y, this.largura, this.altura);
+        // ctx.fillStyle = cor
+        // ctx.fillRect(this.x, this.y, this.largura, this.altura);
     }
 }
 
@@ -39,6 +40,8 @@ class Personagem extends Entidade {
         super(x, y, largura, altura);
         this.#pulando = false;
         this.#velocidadey = 0;
+        this.image = new Image(this.largura, this.altura);
+        this.image.src = 'https://img.itch.zone/aW1nLzIyNjc3NzQucG5n/315x250%23c/Nsn5Eb.png';
     }
 
     saltar() {
@@ -70,6 +73,8 @@ class Obstaculo extends Entidade {
     constructor(x, y, largura, altura, velocidadeX) {
         super(x, y, largura, altura);
         this.velocidadeX = velocidadeX;
+        this.image = new Image(this.largura, this.altura);
+        this.image.src = 'https://static.vecteezy.com/system/resources/previews/009/306/151/non_2x/rocket-spaceship-clipart-design-illustration-free-png.png';
     }
 
     atualizarObstaculo() {
@@ -77,15 +82,16 @@ class Obstaculo extends Entidade {
         if (this.x <= -this.largura) {
             this.x = canvas.width;
             this.velocidadeX += 0.1;
-            let novaAltura = (Math.random() * 50) + 100;
+            let novaAltura = (Math.random() * 100) + 100;
             this.altura = novaAltura;
             this.y = canvas.height - this.altura;
         }
     }
 
-    desenhar(ctx) {
-        ctx.fillStyle = 'green';
-        ctx.fillRect(this.x, this.y, this.largura, this.altura);
+    desenhar() {
+        ctx.drawImage(this.image, this.x, this.y, this.largura, this.altura);
+        // ctx.fillStyle = 'green';
+        // ctx.fillRect(this.x, this.y, this.largura, this.altura);
     }
 }
 
