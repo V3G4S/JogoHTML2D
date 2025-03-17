@@ -37,15 +37,14 @@ class Personagem extends Entidade {
 
     constructor(x, y, largura, altura) {
         super(x, y, largura, altura);
-        this.#pulando = false; 
-        this.#velocidadey = 0; 
+        this.#pulando = false;
+        this.#velocidadey = 0;
     }
 
     saltar() {
         if (!this.#pulando) {
             this.#velocidadey = 15;
             this.#pulando = true;
-            console.log('pulou');
         }
     }
 
@@ -68,18 +67,50 @@ class Personagem extends Entidade {
 }
 
 class Obstaculo extends Entidade {
-    constructor(x, y, largura, altura) {
+    constructor(x, y, largura, altura, velocidadeX) {
         super(x, y, largura, altura);
+        this.velocidadeX = velocidadeX;
+    }
+
+    atualizarObstaculo() {
+        this.x -= this.velocidadeX;
+        if (this.x <= -this.largura) {
+            this.x = canvas.width;
+            this.velocidadeX += 0.1;
+            let novaAltura = (Math.random() * 50) + 100;
+            this.altura = novaAltura;
+            this.y = canvas.height - this.altura;
+        }
+    }
+
+    desenhar(ctx) {
+        ctx.fillStyle = 'green';
+        ctx.fillRect(this.x, this.y, this.largura, this.altura);
     }
 }
 
-const personagem = new Personagem(100, canvas.height - 50, 50, 50);
+function verificaColisao(personagem, obstaculo) {
+    if (
+        personagem.x < obstaculo.x + obstaculo.largura &&
+        personagem.x + personagem.largura > obstaculo.x &&
+        personagem.y < obstaculo.y + obstaculo.altura &&
+        personagem.y + personagem.altura > obstaculo.y
+    ) {
+        gameOver = true;
+    }
+}
+
+const obstaculo = new Obstaculo(canvas.width, canvas.height - 100, 50, 100, 5);
+const personagem = new Personagem(150, canvas.height - 50, 50, 50)
 
 function loop() {
     if (!gameOver) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         personagem.desenhar(ctx, 'red');
         personagem.atualizarPersonagem();
+        obstaculo.atualizarObstaculo();
+        obstaculo.desenhar(ctx);
+        verificaColisao(personagem, obstaculo);
         requestAnimationFrame(loop);
     }
 }
